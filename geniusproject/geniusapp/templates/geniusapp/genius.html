@@ -1,0 +1,83 @@
+{%load staticfiles%}
+<!DOCTYPE html>
+<html>
+<head>
+	<link rel="stylesheet" href="{% static "geniusapp/genius_sheet.css" %}">
+
+	<script defer src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+	<script defer src="{%static "geniusapp/genius_sheet.js"%}"></script>
+	<title></title>
+</head>
+<body>
+	<input type="button" value="Save" id="save">
+	<br><hr><br>
+	<div id="outer_char_sheet">
+
+		<div id="char_info" class="triple_outer_container">
+			<div id="name_player_game" class="left_div">
+				<div class="key">
+					<div id="name_key">Name: </div>
+					<div id="player_key">Player:</div>
+					<div id="game_key">Chronicle:</div>
+				</div>
+				<div class="value">
+					<input type="text" id="name_value">
+					<input type="text" id="player_value">
+					<input type="text" id="game_value">
+				</div>
+			</div>
+
+			<div class="middle_div" id="virtue_vice_concept">
+				<div class="key">
+					<div id="virtue_key">Virtue:</div>
+					<div id="vice_key">Vice:</div>
+					<div id="concept_key">Concept:</div>
+				</div>
+				<div class="value">
+					<input type="text" id="virtue_value">
+					<input type="text" id="vice_value">
+					<input type="text" id="concept_value">
+				</div>
+			</div>
+
+			<div class="right_div" id="catalyst_foundation_aesthetic">
+				<div class="key">
+					<div id="catalyst_key">Catalyst:</div>
+					<div id="foundation_key">Foundation:</div>
+					<div id="aesthetic_key">Aestheic:</div>
+				</div>
+				<div class="value">
+					<input type="text" id="catalyst_value">
+					<input type="text" id="foundation_value">
+					<input type="text" id="aesthetic_value">
+				</div>
+			</div>
+		</div>
+		<br><hr><br>
+		<div id="attributes" class="triple_outer_container">
+			<div class="left_div" id="mental_attr">
+				
+			</div>
+
+			<div class="middle_div" id="social_attr">
+				
+			</div>
+
+			<div class="right_div" id="physical_attr">
+				
+			</div>
+		</div>
+		<br><hr><br>
+		<div id="attributes" class="triple_outer_container">
+			<div class="left_div" id="mental_skills">
+
+			</div>
+			<div class="middle_div" id="physical_skills">
+
+			</div>
+			<div class="right_div" id="social_skills">
+
+			</div>
+	</div>
+</body>
+</html>

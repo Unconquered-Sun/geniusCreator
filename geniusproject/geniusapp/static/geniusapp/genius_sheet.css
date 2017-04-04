@@ -1,0 +1,38 @@
+.triple_outer_container{
+	text-align: left;
+}
+
+.key{
+	display:inline-block;
+	vertical-align: top;
+	text-align: left;
+}
+.key > div{
+	padding-bottom: 2px;
+}
+.value{
+	display:inline-block;
+	vertical-align: top;
+	text-align: left;
+	width:50%;
+}
+
+.left_div{
+	display: inline-block;
+	text-align: left;
+	width:33%;
+}
+.middle_div{
+	display: inline-block;
+	text-align: left;
+	width:33%;
+}
+.right_div{
+	display: inline-block;
+	text-align: left;
+	width:33%;
+
+}
+#outer_char_sheet{
+	width:50%;
+}
