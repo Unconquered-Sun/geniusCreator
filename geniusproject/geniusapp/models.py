@@ -58,4 +58,73 @@ class genius_char(models.Model):
 	specialties = JSONField()
 	merits = JSONField()
 
+	@classmethod
+	def create_genius(self, player_info, attributes, userID):
+		genius_instance = self(
+			owner = userID,
+			name = player_info.get('name'),
+			catalyst = player_info.get('catalyst'),
+			foundation = player_info.get('foundation'),
+			virtue = player_info.get('virtue'),
+			vice = player_info.get('vice'),
+			aesthetics = player_info.get('aesthetics'),
+			strength_attr = attributes.get('strength'),
+			dexterity_attr = attributes.get('dexterity'),
+			stamina_attr = attributes.get('stamina'),
+			intelligence_attr = attributes.get('intelligence'),
+			wits_attr = attributes.get('wits'),
+			resolve_attr = attributes.get('resolve'),
+			presence_attr = attributes.get('presence'),
+			manipulation_attr = attributes.get('manipulation'),
+			composure_attr = attributes.get('composure'),
+			academics_skill = attributes.get('academics'),
+			computer_skill = attributes.get('computer'),
+			crafts_skill = attributes.get('crafts'),
+			investigation_skill = attributes.get('investigation'),
+			medicine_skill = attributes.get('medicine'),
+			occult_skill = attributes.get('occult'),
+			politics_skill = attributes.get('politics'),
+			science_skill = attributes.get('science'),
+			athletics_skill = attributes.get('athletics'),
+			brawl_skill = attributes.get('brawl'),
+			drive_skill = attributes.get('drive'),
+			firearms_skill = attributes.get('firearms'),
+			larceny_skill = attributes.get('larceny'),
+			stealth_skill = attributes.get('stealth'),
+			survival_skill = attributes.get('survival'),
+			weaponry_skill = attributes.get('weaponry'),
+			animal_ken_skill = attributes.get('animalken'),
+			empathy_skill = attributes.get('empathy'),
+			expression_skill = attributes.get('expression'),
+			intimidation_skill = attributes.get('intimidation'),
+			persuasion_skill = attributes.get('persuasion'),
+			socialize_skill = attributes.get('socialize'),
+			streetwise_skill = attributes.get('streetwise'),
+			subterfuge_skill = attributes.get('subterfuge'),
+			apokalypsi_axiom = attributes.get('apokalypsi'),
+			automata_axiom = attributes.get('automata'),
+			epikrato_axiom = attributes.get('epikrato'),
+			exelixi_axiom = attributes.get('exelixi'),
+			katastrofi_axiom = attributes.get('katastrofi'),
+			metaptropi_axiom = attributes.get('metaptropi'),
+			prostasia_axiom = attributes.get('prostasia'),
+			skafoi_axiom = attributes.get('skafoi'),
+			inspiration = attributes.get('inspiration'),
+			obligation = attributes.get('obligation'),
+			size = attributes.get('size'),
+			specialties = {},
+			merits = {})
 
+		return(genius_instance)
+
+
+
+class wonder_info(models.Model):
+	genius_char = models.ForeignKey(genius_char, on_delete=models.CASCADE)
+	axiom_id = models.IntegerField()
+	rank = models.IntegerField()
+	wonder_type_id = models.IntegerField()
+	core_modifier = models.IntegerField()
+	notes = models.TextField()
+	fault = models.TextField()
+	variables = JSONField()

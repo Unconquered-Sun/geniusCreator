@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from django.views.generic import View
-from .models import genius_char
+from .models import genius_char, wonder_info
 
 # Create your views here.
 class Login(View):
@@ -78,4 +78,34 @@ class ShowGenius(View):
 	def post(self, request):
 		print(request.POST)
 		print(request.POST.get("genius","fail"))
-		return HttpResponse(str("TEST"))
+		temp_genius = request.POST.get("genius",False)
+		if temp_genius == False:
+			return HttpResponse(str("TEST"))
+		else:
+			try:
+				result =genius_char.objects.get(owner_id=request.session["id"])
+			except genius_char.DoesNotExist:
+				result = None
+			if result == None:
+				print("test1")
+				# genius_char.objects.create()
+			else:
+				print("test2")
+
+class ShowWonders(View):
+	def get(self,request):
+		print("Wonders Get")
+		if "id" in request.session:
+			if request.session["id"] != None:
+				print("Getting Genius Info from User ID")
+				try:
+					result =genius_char.objects.get(owner_id=request.session["id"])
+				except genius_char.DoesNotExist:
+					result = None
+				if result ==None:
+					print("No such genius")
+					return redirect("Login")
+				else:
+					wonder_info.objects.filter(genius_char=result)
+					print(wonder_info)
+					return render(request, "geniusapp/wonderview.html",{"wonders":wonder_info})
