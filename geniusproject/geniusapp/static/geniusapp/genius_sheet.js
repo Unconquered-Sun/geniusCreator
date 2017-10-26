@@ -1,3 +1,10 @@
+Array.prototype.find = function(regex) {
+  var arr = this;
+  var matches = arr.filter( function(e) { return regex.test(e); } );
+  return matches.map(function(e) { return arr.indexOf(e); } );
+};
+
+
 $(document).ready(function(){
 	var range=[1,2,3,4,5]
 	checkboxPattern ={"mental_attr":["intelligence","wits","resolve"],
@@ -18,8 +25,10 @@ $(document).ready(function(){
 	for (key in checkboxPattern){
 		load_skills(key, checkboxPattern[key])
 	}
+	var case_id = 1
 	for(specialCase in specialCases){
-		load_special_cases(specialCase, specialCases[specialCase]["keys"], specialCases[specialCase]["value_type"], specialCases[specialCase]["key_type"])
+		new_case_id = load_special_cases(specialCase, specialCases[specialCase]["keys"], specialCases[specialCase]["value_type"], specialCases[specialCase]["key_type"], case_id)
+		case_id+= new_case_id
 	}
 	function load_text_box(target, keys){
 		var text_output = "";
@@ -35,28 +44,34 @@ $(document).ready(function(){
 		$("#"+target).html(text_output);
 	}
 
-	function load_special_cases(target, keys, value_type, key_type){
+	function load_special_cases(target, keys, value_type, key_type, special_case_id){
 		var special_output = "";
 		key_name = ""
 		special_output+= '<div class="key">';
+		starting_id = special_case_id;
 		if(key_type=="standard"){// if the key is a standard string
 			key_name = "key"
+			starting_id = special_case_id
 			for (key in keys){
-				special_output+='<div id="'+key_name+'_key" class="specialcase_key">'+toUpperCase(keys[key])+':</div>';
+				special_output+='<div id="'+key_name+'_key" class="specialcase_key specialcase specialcase_id_'+starting_id+'">'+toUpperCase(keys[key])+':</div>';
+				starting_id += 1
 			}
 		}
 		else if(key_type == "html"){//IF the key is a html string
 			x=1
 			key_name = "target"
+			starting_id = special_case_id
 			for (key in keys){
-				special_output+='<div id="'+target+"_"+x+'_key" class="specialcase_key">'+keys[key]+':</div>';
+				special_output+='<div id="'+target+"_"+x+'_key" class="specialcase_key specialcase specialcase_id_'+starting_id+'">'+keys[key]+':</div>';
 				x+=1
+				starting_id += 1
 			}
 
 		}
 		special_output+='</div><div class="value">';
 		if(value_type == "dots"){//Value is in dots
 			x = 1
+			starting_id = special_case_id
 			for (key in keys){
 				new_key = ""
 				if (key_name=="target"){
@@ -68,14 +83,16 @@ $(document).ready(function(){
 
 				special_output+='<div id="'+new_key+'_dots" class="dots">'
 				for(x in range){
-					special_output+='<input type="checkbox" class="'+range[x]+' checkbox '+new_key+' '+target+' specialcase_value">'
+					special_output+='<input type="checkbox" class="'+range[x]+' checkbox '+new_key+' '+target+' specialcase_value specialcase specialcase_id_'+starting_id+'">'
 				}
 			special_output+='</div>'
 			x+=1
+			starting_id += 1
 			}
 		}
 		else if(value_type == "text"){//Value is a textbox
 			x=1
+			starting_id = special_case_id
 			for (key in keys){
 				new_key = ""
 				if (key_name=="target"){
@@ -84,12 +101,14 @@ $(document).ready(function(){
 				else if (key_name == "key"){
 					new_key=keys[key]
 				}
-				special_output += '<input type="text" class="'+target+'_textbox textbox '+new_key+' specialcase_value">';
+				special_output += '<input type="text" class="'+target+'_textbox textbox '+new_key+' specialcase_value specialcase specialcase_id_'+starting_id+'">';
 				x+=1
+				starting_id += 1
 			}
 		}
 		else{//Assume dots
 			x = 1
+			starting_id = special_case_id
 			for (key in keys){
 				new_key = ""
 				if (key_name=="target"){
@@ -101,12 +120,15 @@ $(document).ready(function(){
 
 				special_output+='<div id="'+new_key+'_dots" class="dots">'
 				for(x in range){
-					special_output+='<input type="checkbox" class="'+range[x]+' checkbox '+new_key+' '+target+' specialcase_value">'
+					special_output+='<input type="checkbox" class="'+range[x]+' checkbox '+new_key+' '+target+' specialcase_value specialcase specialcase_id_'+starting_id+'">'
 				}
 			special_output+='</div>'
 			x+=1
+			starting_id += 1
 			}
 		}
+
+
 		$("#"+target).html(special_output);
 		$("#"+target).children().css("display","inline-block").css("vertical-align", "top").css("text-align","left");
 		if(key_type=="standard"){
@@ -122,6 +144,8 @@ $(document).ready(function(){
 			$("#"+target+" > .key > div").css("padding-bottom","3px")	
 		}
 		// $("#"+target).find("div").find("div").css("width","50%")
+		console.log(starting_id)
+		return starting_id
 	}
 
 	function load_skills(target, keys){
@@ -257,9 +281,6 @@ $(document).ready(function(){
 
 	}
 
-	function maniaInspiration(){
-
-	}
 
 	//check box dot system
 	$(".value div").on("click",".checkbox",function(e){
@@ -294,7 +315,8 @@ $(document).ready(function(){
 	$("#save").click(saveGenius);
 
 	function saveGenius(){
-		var textBoxes = $(":text").toArray();
+		//Gets genius info. Including(name, catalyst, foundation, aesthetic, and more)
+		var textBoxes = $(":text").not(".specialcase").toArray();
 		var output = {};
 		var playerInfo = {};
 		for (text in textBoxes){
@@ -303,26 +325,37 @@ $(document).ready(function(){
 			playerInfo[key] = textBoxes[text].value;
 		}
 		output["playerInfo"]=playerInfo;
-		var checkBoxes = $(":checkbox").toArray();
+
+		//Get all skills and attributes that are not special cases
+		var checkBoxes = $(":checkbox").not(".specialcase").toArray();
 		var skillList = {}
 		classList = [];
 		for (x in checkboxPattern){
 			classList = classList.concat(checkboxPattern[x])
 		}
 		for(x in classList){
-			var dotList = $("."+classList[x]).filter(":checked").toArray();
-			var highestDot = 0;
-			for (dot in dotList){
-				dotLevel = parseInt(dotList[dot].className.charAt(0));
-				// console.log(dotLevel)
-				if(dotLevel>highestDot){
-					highestDot=dotLevel
-				}
-			}
-			skillList[classList[x]]=highestDot
+			skillList[classList[x]]=getDots(classList[x])
 		}
 		output["skills"] = skillList;
-		console.log(output)
+
+		//Specialcases
+		var specialCaseKey = $(".specialcase_key").toArray();
+		var specialCaseDict = {}
+		// Create a new dictionary of each special case
+		for(x in specialCaseKey){
+			currentCase = specialCaseKey[x];
+			classKey = $(currentCase).attr("class").split(' ').find( new RegExp("specialcase_id_.*") )[0];
+			currentKey = $(currentCase).attr("class").split(' ')[classKey];
+			console.log(classKey);
+			value = $("."+currentKey).filter(".specialcase_value").toArray();
+			key =  $("."+currentKey).filter(".specialcase_key").toArray()[0];
+			specialCaseDict[currentKey] = {"key":key,"value":value}
+		}
+		
+		console.log(specialCaseDict)
+		// console.log(specialCaseValue)
+
+		// console.log(output)
 		$.ajax({
 			url:"/genius/",
 			type:"POST",
