@@ -67,7 +67,7 @@ class genius_char(models.Model):
 			foundation = player_info.get('foundation'),
 			virtue = player_info.get('virtue'),
 			vice = player_info.get('vice'),
-			aesthetics = player_info.get('aesthetics'),
+			aesthetics = player_info.get('aesthetic'),
 			strength_attr = attributes.get('strength'),
 			dexterity_attr = attributes.get('dexterity'),
 			stamina_attr = attributes.get('stamina'),
@@ -113,7 +113,7 @@ class genius_char(models.Model):
 			obligation = attributes.get('obligation'),
 			size = attributes.get('size'),
 			specialties = {},
-			merits = {})
+			merits = attributes.get("merit"))
 
 		return(genius_instance)
 

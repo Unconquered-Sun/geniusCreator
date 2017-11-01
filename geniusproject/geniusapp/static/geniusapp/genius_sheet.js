@@ -58,7 +58,7 @@ $(document).ready(function(){
 			}
 		}
 		else if(key_type == "html"){//IF the key is a html string
-			x=1
+			var x=1
 			key_name = "target"
 			starting_id = special_case_id
 			for (key in keys){
@@ -70,7 +70,7 @@ $(document).ready(function(){
 		}
 		special_output+='</div><div class="value">';
 		if(value_type == "dots"){//Value is in dots
-			x = 1
+			var x = 1
 			starting_id = special_case_id
 			for (key in keys){
 				new_key = ""
@@ -80,18 +80,21 @@ $(document).ready(function(){
 				else if (key_name == "key"){
 					new_key=keys[key]
 				}
+				// console.log(new_key)
+				// console.log(x)
+
 
 				special_output+='<div id="'+new_key+'_dots" class="dots">'
-				for(x in range){
-					special_output+='<input type="checkbox" class="'+range[x]+' checkbox '+new_key+' '+target+' specialcase_value specialcase specialcase_id_'+starting_id+'">'
+				for(y in range){
+					special_output+='<input type="checkbox" class="'+range[y]+' checkbox '+new_key+' '+target+' specialcase_value specialcase specialcase_id_'+starting_id+'">'
 				}
+				x=x+1;
+				starting_id += 1
 			special_output+='</div>'
-			x+=1
-			starting_id += 1
 			}
 		}
 		else if(value_type == "text"){//Value is a textbox
-			x=1
+			var x=1
 			starting_id = special_case_id
 			for (key in keys){
 				new_key = ""
@@ -107,7 +110,7 @@ $(document).ready(function(){
 			}
 		}
 		else{//Assume dots
-			x = 1
+			var x = 1
 			starting_id = special_case_id
 			for (key in keys){
 				new_key = ""
@@ -117,13 +120,12 @@ $(document).ready(function(){
 				else if (key_name == "key"){
 					new_key=keys[key]
 				}
-
 				special_output+='<div id="'+new_key+'_dots" class="dots">'
-				for(x in range){
-					special_output+='<input type="checkbox" class="'+range[x]+' checkbox '+new_key+' '+target+' specialcase_value specialcase specialcase_id_'+starting_id+'">'
+				for(y in range){
+					special_output+='<input type="checkbox" class="'+range[y]+' checkbox '+new_key+' '+target+' specialcase_value specialcase specialcase_id_'+starting_id+'">'
 				}
+				x=x+1
 			special_output+='</div>'
-			x+=1
 			starting_id += 1
 			}
 		}
@@ -144,7 +146,7 @@ $(document).ready(function(){
 			$("#"+target+" > .key > div").css("padding-bottom","3px")	
 		}
 		// $("#"+target).find("div").find("div").css("width","50%")
-		console.log(starting_id)
+		// console.log(starting_id)
 		return starting_id
 	}
 
@@ -214,14 +216,14 @@ $(document).ready(function(){
 		//if the values must be compared and the lowest returned
 		else if(values["operation"]=="lower"){
 			lowest = null
-			console.log(lowest)
+			// console.log(lowest)
 			for (value in values["values"]){
 				current_array = values["values"][value];
 				if(current_array["type"] == "dots" ){
 					value = getDots( current_array["value"] );
 					if(lowest == null){
 						lowest = value
-						console.log("dots")
+						// console.log("dots")
 					}
 					else{
 						if(value < lowest){
@@ -346,16 +348,75 @@ $(document).ready(function(){
 			currentCase = specialCaseKey[x];
 			classKey = $(currentCase).attr("class").split(' ').find( new RegExp("specialcase_id_.*") )[0];
 			currentKey = $(currentCase).attr("class").split(' ')[classKey];
-			console.log(classKey);
+			// console.log(classKey);
 			value = $("."+currentKey).filter(".specialcase_value").toArray();
 			key =  $("."+currentKey).filter(".specialcase_key").toArray()[0];
 			specialCaseDict[currentKey] = {"key":key,"value":value}
 		}
-		
-		console.log(specialCaseDict)
-		// console.log(specialCaseValue)
+		specialCaseOutput = {}
+		//Get the keys of each value
+		meritOutput = {}
+		for (x in specialCaseDict){
+			key = ""
+			isMerit = false
+			
+			currentCase = $(specialCaseDict[x]["key"])
 
-		// console.log(output)
+			classKey = $(currentCase).attr("class").split(' ').find( new RegExp("specialcase_id_.*") )[0];
+			
+			id = $(currentCase).attr("class").split(' ')[classKey];
+			
+			if (currentCase.prop("nodeName") == "DIV"){
+				children = currentCase.children()
+				// If the key div has no children then we can assume it only contains text
+				if (children.length == 0){
+					key = currentCase.text().slice(0,-1).toLowerCase()
+				}
+				else{
+					//If it has a child that is an Input then we can assume that input contains the key
+					if ($(children[0]).prop("nodeName") == "INPUT"){
+						//Check if the input is not empty
+						if($(children[0]).val() != ""){
+							//If the id is a merit then put the end result in the meritOutput instead of specialCaseOutput
+							if (currentCase.attr("id").includes("merit") ){
+								console.log("Merit is true")
+								key = $(children[0]).val()
+								isMerit = true
+							}
+							else{
+								key = $(children[0]).val()
+							}
+						}
+					}
+				}
+			}
+			if (key != ""){
+				// console.log(key)
+				value = 0
+				if (specialCaseDict[x]["value"].length >1){
+					value = getDots(id)
+				}
+				else{
+					value = $(specialCaseDict[x]["value"][0]).val() 
+					if (value == ""){
+						value = "0"
+					}
+				}
+				if (isMerit == true){
+					meritOutput[key] = value
+				}
+				else{
+					specialCaseOutput[key]=value
+				}
+			}
+		}
+		// console.log(meritOutput);
+		output["merit"] = meritOutput;
+		output["specialCase"] = specialCaseOutput;
+		// console.log(specialCaseOutput);
+		// console.log(specialCaseValue);
+
+		console.log(output);
 		$.ajax({
 			url:"/genius/",
 			type:"POST",
