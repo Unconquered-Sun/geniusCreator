@@ -7,6 +7,64 @@ from django.views.generic import View
 from .models import genius_char, wonder_info
 import json
 
+#Update an existing genius object
+def update_genius(self, player_info, attributes, userID):
+		self.owner = userID;
+		self.name = player_info.get('name');
+		self.catalyst = player_info.get('catalyst')
+		self.foundation = player_info.get('foundation')
+		self.virtue = player_info.get('virtue')
+		self.vice = player_info.get('vice')
+		self.aesthetics = player_info.get('aesthetic')
+		self.strength_attr = attributes.get('strength')
+		self.dexterity_attr = attributes.get('dexterity')
+		self.stamina_attr = attributes.get('stamina')
+		self.intelligence_attr = attributes.get('intelligence')
+		self.wits_attr = attributes.get('wits')
+		self.resolve_attr = attributes.get('resolve')
+		self.presence_attr = attributes.get('presence')
+		self.manipulation_attr = attributes.get('manipulation')
+		self.composure_attr = attributes.get('composure')
+		self.academics_skill = attributes.get('academics')
+		self.computer_skill = attributes.get('computer')
+		self.crafts_skill = attributes.get('crafts')
+		self.investigation_skill = attributes.get('investigation')
+		self.medicine_skill = attributes.get('medicine')
+		self.occult_skill = attributes.get('occult')
+		self.politics_skill = attributes.get('politics')
+		self.science_skill = attributes.get('science')
+		self.athletics_skill = attributes.get('athletics')
+		self.brawl_skill = attributes.get('brawl')
+		self.drive_skill = attributes.get('drive')
+		self.firearms_skill = attributes.get('firearms')
+		self.larceny_skill = attributes.get('larceny')
+		self.stealth_skill = attributes.get('stealth')
+		self.survival_skill = attributes.get('survival')
+		self.weaponry_skill = attributes.get('weaponry')
+		self.animal_ken_skill = attributes.get('animalken')
+		self.empathy_skill = attributes.get('empathy')
+		self.expression_skill = attributes.get('expression')
+		self.intimidation_skill = attributes.get('intimidation')
+		self.persuasion_skill = attributes.get('persuasion')
+		self.socialize_skill = attributes.get('socialize')
+		self.streetwise_skill = attributes.get('streetwise')
+		self.subterfuge_skill = attributes.get('subterfuge')
+		self.apokalypsi_axiom = attributes.get('apokalypsi')
+		self.automata_axiom = attributes.get('automata')
+		self.epikrato_axiom = attributes.get('epikrato')
+		self.exelixi_axiom = attributes.get('exelixi')
+		self.katastrofi_axiom = attributes.get('katastrofi')
+		self.metaptropi_axiom = attributes.get('metaptropi')
+		self.prostasia_axiom = attributes.get('prostasia')
+		self.skafoi_axiom = attributes.get('skafoi')
+		self.inspiration = attributes.get('inspiration')
+		self.obligation = attributes.get('obligation')
+		self.size = attributes.get('size')
+		self.specialties = {}
+		self.merits = attributes.get("merit")
+
+
+
 # Create your views here.
 class Login(View):
 	def get(self, request):
@@ -73,8 +131,6 @@ class ShowGenius(View):
 					genius_info = {"genius":result}
 					return render(request, "geniusapp/genius.html",{"genius":genius_info})
 
-				print(genius_info)
-				print(result)
 				
 		return redirect("Login")
 	#Save genius
@@ -103,8 +159,6 @@ class ShowGenius(View):
 				elif sub_list == "playerInfo":
 					player_attr = temp_genius[sub_list]
 
-		print(new_genius)
-		print(player_attr)
 		if temp_genius == False:
 			return HttpResponse(str("TEST"))
 		else:
@@ -114,13 +168,16 @@ class ShowGenius(View):
 				result = None
 			if result == None:
 				temp_genius_object = genius_char.create_genius(player_attr, new_genius, User.objects.get(id=request.session["id"]))
-				print(temp_genius_object)
 				print("test1")
 				temp_genius_object.save()
+				return JsonResponse({"result":"created"})
 				
-				# genius_char.objects.create()
 			else:
-				print("test2")
+				print("test2 ver 11")
+				
+				update_genius(result, player_attr, new_genius, User.objects.get(id=request.session["id"]) )
+				result.save()
+				return JsonResponse({"result":"updated"})
 
 class ShowWonders(View):
 	def get(self,request):
