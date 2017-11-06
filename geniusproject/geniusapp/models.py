@@ -119,6 +119,7 @@ class genius_char(models.Model):
 
 
 
+
 class wonder_info(models.Model):
 	genius_char = models.ForeignKey(genius_char, on_delete=models.CASCADE)
 	axiom_id = models.IntegerField()

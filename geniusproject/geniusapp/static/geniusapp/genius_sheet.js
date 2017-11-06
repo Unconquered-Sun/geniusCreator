@@ -15,7 +15,9 @@ $(document).ready(function(){
 			"social_skills":["animalken","empathy","expression","intimidation","persuasion","socialize","streetwise","subterfuge"],
 			"axioms":["apokalypsi","automata","epikrato","exelixi","katastrofi","metaptropi","prostasia","skafoi"]}
 	
-	textboxPattern={"misc":["size","armor","unmada","inspration"]}
+	textboxPattern={"name_player_game":["name","player","chronicle"],
+					"virtue_vice_concept":["virtue","vice","concept"],
+					"catalyst_foundation_aesthetic":["catalyst","foundation","aesthetic"]}
 	specialCases={
 		"merits":{"keys":['<input type="text">','<input type="text">','<input type="text">','<input type="text">','<input type="text">','<input type="text">','<input type="text">','<input type="text">','<input type="text">'], "value_type":"dots", "key_type":"html"},
 		"misc":{"keys":['health','willpower','inspiration','mania','obligation','size','speed','defense','armor','initative'],"value_type":"text","key_type":"standard"} }
@@ -25,6 +27,9 @@ $(document).ready(function(){
 	for (key in checkboxPattern){
 		load_skills(key, checkboxPattern[key])
 	}
+	for (key in textboxPattern){
+		load_text_box(key, textboxPattern[key])
+	}
 	var case_id = 1
 	for(specialCase in specialCases){
 		new_case_id = load_special_cases(specialCase, specialCases[specialCase]["keys"], specialCases[specialCase]["value_type"], specialCases[specialCase]["key_type"], case_id)
@@ -32,16 +37,16 @@ $(document).ready(function(){
 	}
 	function load_text_box(target, keys){
 		var text_output = "";
-		skill_output+= '<div class="key">';
-		for (key in keys){
-			text_output+='<div id="'+keys[key]+'_key">'+toUpperCase(keys[key])+':</div>';
+		text_output = '<table id="'+target+'">'
+		for( key in keys){
+			text_output += '<tr>'
+			text_output+='<td id="'+keys[key]+'_key">'+toUpperCase(keys[key])+':</td>';
+			text_output += '<td><input type="text" class="'+keys[key]+'_textbox textbox '+target+'"></td>';
+			text_output += '</tr>'
 		}
-		text_output+='</div><div class="value">';
-		for (key in keys){
-			text_output += '<input type="text" class="'+keys[key]+'_textbox textbox '+target+'">';
-		}
-		text_output+="</div>"
+		text_output += '</table>';
 		$("#"+target).html(text_output);
+		console.log(text_output);
 	}
 
 	function load_special_cases(target, keys, value_type, key_type, special_case_id){
@@ -152,22 +157,19 @@ $(document).ready(function(){
 
 	function load_skills(target, keys){
 		var skill_output = "";
-		skill_output+= '<div class="key">';
-		for (key in keys){
-			skill_output+='<div id="'+keys[key]+'_key">'+toUpperCase(keys[key])+':</div>'
-		}
-		skill_output+='</div><div class="value">';
-		for (key in keys){
-			skill_output+='<div id="'+keys[key]+'_dots" class="dots">'
-			
+		skill_output = '<table id="'+target+'">'
+		for( key in keys){
+			skill_output += '<tr>'
+			skill_output+='<td id="'+keys[key]+'_key">'+toUpperCase(keys[key])+':</td>';
+			skill_output += '<td class="value"><div>';
 			for(x in range){
 				skill_output+='<input type="checkbox" class="'+range[x]+' checkbox '+keys[key]+' '+target+'">'
 			}
-			skill_output+='</div>'
+			skill_output += '</td>';
+			skill_output += '</tr>'
 		}
-		skill_output+='</div>';
+		skill_output += '</table>';
 		$("#"+target).html(skill_output);
-		// console.log(skill_output)
 	};
 
 	function toUpperCase(word){
@@ -286,6 +288,7 @@ $(document).ready(function(){
 
 	//check box dot system
 	$(".value div").on("click",".checkbox",function(e){
+		console.log("PING")
 		var classes = ($(this).attr("class")).split(" ");
 		classes.splice(classes.indexOf("checkbox"),1);
 		// console.log(classes)
