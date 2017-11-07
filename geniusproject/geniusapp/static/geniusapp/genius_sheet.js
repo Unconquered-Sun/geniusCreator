@@ -37,7 +37,7 @@ $(document).ready(function(){
 	}
 	function load_text_box(target, keys){
 		var text_output = "";
-		text_output = '<table id="'+target+'">'
+		text_output = '<table id="'+target+'_table">'
 		for( key in keys){
 			text_output += '<tr>'
 			text_output+='<td id="'+keys[key]+'_key">'+toUpperCase(keys[key])+':</td>';
@@ -52,112 +52,161 @@ $(document).ready(function(){
 	function load_special_cases(target, keys, value_type, key_type, special_case_id){
 		var special_output = "";
 		key_name = ""
-		special_output+= '<div class="key">';
 		starting_id = special_case_id;
-		if(key_type=="standard"){// if the key is a standard string
-			key_name = "key"
-			starting_id = special_case_id
-			for (key in keys){
-				special_output+='<div id="'+key_name+'_key" class="specialcase_key specialcase specialcase_id_'+starting_id+'">'+toUpperCase(keys[key])+':</div>';
+		//New Method
+		var x=1
+		special_output += '<table id="'+target+'">'
+		for (key in keys){
+			special_output += '<tr>'
+
+			//Create Key td
+			if (key_type == "standard"){
+				key_name = "key"
+				special_output += '<td id="'+key_name+'_key" class="specialcase_key specialcase specialcase_id_'+starting_id+'">'+toUpperCase(keys[key])+':</td>';
 				starting_id += 1
 			}
-		}
-		else if(key_type == "html"){//IF the key is a html string
-			var x=1
-			key_name = "target"
-			starting_id = special_case_id
-			for (key in keys){
-				special_output+='<div id="'+target+"_"+x+'_key" class="specialcase_key specialcase specialcase_id_'+starting_id+'">'+keys[key]+':</div>';
+			else if (key_type == "html"){
+				key_name = "target"
+				special_output+='<td id="'+target+"_"+x+'_key" class="specialcase_key specialcase specialcase_id_'+starting_id+'">'+keys[key]+':</td>';
 				x+=1
 				starting_id += 1
 			}
 
-		}
-		special_output+='</div><div class="value">';
-		if(value_type == "dots"){//Value is in dots
-			var x = 1
-			starting_id = special_case_id
-			for (key in keys){
-				new_key = ""
-				if (key_name=="target"){
-					new_key= target+"_"+x
-				}
-				else if (key_name == "key"){
-					new_key=keys[key]
-				}
-				// console.log(new_key)
-				// console.log(x)
+			new_key = ""
+			if (key_name=="target"){
+				new_key= target+"_"+x
+			}
+			else if (key_name == "key"){
+				new_key=keys[key]
+			}
 
-
-				special_output+='<div id="'+new_key+'_dots" class="dots">'
+			//create value td
+			if(value_type == "dots"){
+				special_output+='<td><div id="'+new_key+'_dots" class="dots">'
 				for(y in range){
 					special_output+='<input type="checkbox" class="'+range[y]+' checkbox '+new_key+' '+target+' specialcase_value specialcase specialcase_id_'+starting_id+'">'
 				}
-				x=x+1;
-				starting_id += 1
-			special_output+='</div>'
+				special_output+='</div></td>'
 			}
-		}
-		else if(value_type == "text"){//Value is a textbox
-			var x=1
-			starting_id = special_case_id
-			for (key in keys){
-				new_key = ""
-				if (key_name=="target"){
-					new_key= target+"_"+x
-				}
-				else if (key_name == "key"){
-					new_key=keys[key]
-				}
+			else if(value_type == "text"){
+				special_output += "<td>"
 				special_output += '<input type="text" class="'+target+'_textbox textbox '+new_key+' specialcase_value specialcase specialcase_id_'+starting_id+'">';
-				x+=1
-				starting_id += 1
+				special_output += "</td>"
 			}
+			special_output += "</tr>"
 		}
-		else{//Assume dots
-			var x = 1
-			starting_id = special_case_id
-			for (key in keys){
-				new_key = ""
-				if (key_name=="target"){
-					new_key= target+"_"+x
-				}
-				else if (key_name == "key"){
-					new_key=keys[key]
-				}
-				special_output+='<div id="'+new_key+'_dots" class="dots">'
-				for(y in range){
-					special_output+='<input type="checkbox" class="'+range[y]+' checkbox '+new_key+' '+target+' specialcase_value specialcase specialcase_id_'+starting_id+'">'
-				}
-				x=x+1
-			special_output+='</div>'
-			starting_id += 1
-			}
-		}
-
+		special_output += "</table>"
 
 		$("#"+target).html(special_output);
-		$("#"+target).children().css("display","inline-block").css("vertical-align", "top").css("text-align","left");
-		if(key_type=="standard"){
-			$("#"+target+" > .key > div").css("padding-bottom","2px")
-		}
-		if (key_type=="html"){
-			$("#"+target+" > .key > div").css("padding-bottom","0px")
-			if(value_type=="dots"){
-				$("#"+target+" > .value > div").css("padding-bottom","1px")
-			}
-		}
-		if (value_type == "text"){
-			$("#"+target+" > .key > div").css("padding-bottom","3px")	
-		}
+
+		return starting_id
+
+		// //Old method
+		// special_output+= '<div class="key">';
+		// if(key_type=="standard"){// if the key is a standard string
+		// 	key_name = "key"
+		// 	starting_id = special_case_id
+		// 	for (key in keys){
+		// 		special_output+='<div id="'+key_name+'_key" class="specialcase_key specialcase specialcase_id_'+starting_id+'">'+toUpperCase(keys[key])+':</div>';
+		// 		starting_id += 1
+		// 	}
+		// }
+		// else if(key_type == "html"){//IF the key is a html string
+		// 	var x=1
+		// 	key_name = "target"
+		// 	starting_id = special_case_id
+		// 	for (key in keys){
+		// 		special_output+='<div id="'+target+"_"+x+'_key" class="specialcase_key specialcase specialcase_id_'+starting_id+'">'+keys[key]+':</div>';
+		// 		x+=1
+		// 		starting_id += 1
+		// 	}
+
+		// }
+		// special_output+='</div><div class="value">';
+		// if(value_type == "dots"){//Value is in dots
+		// 	var x = 1
+		// 	starting_id = special_case_id
+		// 	for (key in keys){
+		// 		new_key = ""
+		// 		if (key_name=="target"){
+		// 			new_key= target+"_"+x
+		// 		}
+		// 		else if (key_name == "key"){
+		// 			new_key=keys[key]
+		// 		}
+		// 		// console.log(new_key)
+		// 		// console.log(x)
+
+
+		// 		special_output+='<div id="'+new_key+'_dots" class="dots">'
+		// 		for(y in range){
+		// 			special_output+='<input type="checkbox" class="'+range[y]+' checkbox '+new_key+' '+target+' specialcase_value specialcase specialcase_id_'+starting_id+'">'
+		// 		}
+		// 		x=x+1;
+		// 		starting_id += 1
+		// 	special_output+='</div>'
+		// 	}
+		// }
+		// else if(value_type == "text"){//Value is a textbox
+		// 	var x=1
+		// 	starting_id = special_case_id
+		// 	for (key in keys){
+		// 		new_key = ""
+		// 		if (key_name=="target"){
+		// 			new_key= target+"_"+x
+		// 		}
+		// 		else if (key_name == "key"){
+		// 			new_key=keys[key]
+		// 		}
+		// 		special_output += '<input type="text" class="'+target+'_textbox textbox '+new_key+' specialcase_value specialcase specialcase_id_'+starting_id+'">';
+		// 		x+=1
+		// 		starting_id += 1
+		// 	}
+		// }
+		// else{//Assume dots
+		// 	var x = 1
+		// 	starting_id = special_case_id
+		// 	for (key in keys){
+		// 		new_key = ""
+		// 		if (key_name=="target"){
+		// 			new_key= target+"_"+x
+		// 		}
+		// 		else if (key_name == "key"){
+		// 			new_key=keys[key]
+		// 		}
+		// 		special_output+='<div id="'+new_key+'_dots" class="dots">'
+		// 		for(y in range){
+		// 			special_output+='<input type="checkbox" class="'+range[y]+' checkbox '+new_key+' '+target+' specialcase_value specialcase specialcase_id_'+starting_id+'">'
+		// 		}
+		// 		x=x+1
+		// 	special_output+='</div>'
+		// 	starting_id += 1
+		// 	}
+		// }
+
+
+		// $("#"+target).html(special_output);
+		// $("#"+target).children().css("display","inline-block").css("vertical-align", "top").css("text-align","left");
+		// if(key_type=="standard"){
+		// 	$("#"+target+" > .key > div").css("padding-bottom","2px")
+		// }
+		// if (key_type=="html"){
+		// 	$("#"+target+" > .key > div").css("padding-bottom","0px")
+		// 	if(value_type=="dots"){
+		// 		$("#"+target+" > .value > div").css("padding-bottom","1px")
+		// 	}
+		// }
+		// if (value_type == "text"){
+		// 	$("#"+target+" > .key > div").css("padding-bottom","3px")	
+		// }
 		// $("#"+target).find("div").find("div").css("width","50%")
 		// console.log(starting_id)
-		return starting_id
+		// return starting_id
 	}
 
 	function load_skills(target, keys){
 		var skill_output = "";
-		skill_output = '<table id="'+target+'">'
+		skill_output = '<table id="'+target+'_table">'
 		for( key in keys){
 			skill_output += '<tr>'
 			skill_output+='<td id="'+keys[key]+'_key">'+toUpperCase(keys[key])+':</td>';
