@@ -19,7 +19,7 @@ $(document).ready(function(){
 					"virtue_vice_concept":["virtue","vice","concept"],
 					"catalyst_foundation_aesthetic":["catalyst","foundation","aesthetic"]}
 	specialCases={
-		"merits":{"keys":['<input type="text">','<input type="text">','<input type="text">','<input type="text">','<input type="text">','<input type="text">','<input type="text">','<input type="text">','<input type="text">'], "value_type":"dots", "key_type":"html"},
+		"merits":{"keys":['<input type="text" class="specialcase">','<input type="text" class="specialcase">','<input type="text" class="specialcase">','<input type="text" class="specialcase">','<input type="text" class="specialcase">','<input type="text" class="specialcase">','<input type="text" class="specialcase">','<input type="text" class="specialcase">','<input type="text" class="specialcase">'], "value_type":"dots", "key_type":"html"},
 		"misc":{"keys":['health','willpower','inspiration','mania','obligation','size','speed','defense','armor','initative'],"value_type":"text","key_type":"standard"} }
 	
 	
@@ -41,7 +41,7 @@ $(document).ready(function(){
 		for( key in keys){
 			text_output += '<tr>'
 			text_output+='<td id="'+keys[key]+'_key">'+toUpperCase(keys[key])+':</td>';
-			text_output += '<td><input type="text" class="'+keys[key]+'_textbox textbox '+target+'"></td>';
+			text_output += '<td><input type="text" id="'+keys[key]+'_value" class="'+keys[key]+'_value textbox '+target+'"></td>';
 			text_output += '</tr>'
 		}
 		text_output += '</table>';
@@ -63,13 +63,11 @@ $(document).ready(function(){
 			if (key_type == "standard"){
 				key_name = "key"
 				special_output += '<td id="'+key_name+'_key" class="specialcase_key specialcase specialcase_id_'+starting_id+'">'+toUpperCase(keys[key])+':</td>';
-				starting_id += 1
 			}
 			else if (key_type == "html"){
 				key_name = "target"
 				special_output+='<td id="'+target+"_"+x+'_key" class="specialcase_key specialcase specialcase_id_'+starting_id+'">'+keys[key]+':</td>';
 				x+=1
-				starting_id += 1
 			}
 
 			new_key = ""
@@ -94,6 +92,7 @@ $(document).ready(function(){
 				special_output += "</td>"
 			}
 			special_output += "</tr>"
+			starting_id += 1
 		}
 		special_output += "</table>"
 
@@ -278,6 +277,7 @@ $(document).ready(function(){
 		var textBoxes = $(":text").not(".specialcase").toArray();
 		var output = {};
 		var playerInfo = {};
+		console.log(textBoxes)
 		for (text in textBoxes){
 			key = textBoxes[text].id.replace("_value","")
 			// console.log(key)
@@ -299,18 +299,20 @@ $(document).ready(function(){
 
 		//Specialcases
 		var specialCaseKey = $(".specialcase_key").toArray();
+		// console.log(specialCaseKey)
 		var specialCaseDict = {}
 		// Create a new dictionary of each special case
 		for(x in specialCaseKey){
 			currentCase = specialCaseKey[x];
 			classKey = $(currentCase).attr("class").split(' ').find( new RegExp("specialcase_id_.*") )[0];
 			currentKey = $(currentCase).attr("class").split(' ')[classKey];
-			// console.log(classKey);
+			// console.log(currentKey);
 			value = $("."+currentKey).filter(".specialcase_value").toArray();
 			key =  $("."+currentKey).filter(".specialcase_key").toArray()[0];
 			specialCaseDict[currentKey] = {"key":key,"value":value}
 		}
 		specialCaseOutput = {}
+		// console.log(specialCaseDict)
 		//Get the keys of each value
 		meritOutput = {}
 		for (x in specialCaseDict){
@@ -323,30 +325,29 @@ $(document).ready(function(){
 			
 			id = $(currentCase).attr("class").split(' ')[classKey];
 			
-			if (currentCase.prop("nodeName") == "DIV"){
+			var key = ""
+			// Get the key
+			if (currentCase.children().length > 0){
 				children = currentCase.children()
-				// If the key div has no children then we can assume it only contains text
-				if (children.length == 0){
-					key = currentCase.text().slice(0,-1).toLowerCase()
-				}
-				else{
-					//If it has a child that is an Input then we can assume that input contains the key
-					if ($(children[0]).prop("nodeName") == "INPUT"){
-						//Check if the input is not empty
-						if($(children[0]).val() != ""){
-							//If the id is a merit then put the end result in the meritOutput instead of specialCaseOutput
-							if (currentCase.attr("id").includes("merit") ){
-								console.log("Merit is true")
-								key = $(children[0]).val()
-								isMerit = true
-							}
-							else{
-								key = $(children[0]).val()
-							}
+				if ($(children[0]).prop("nodeName") == "INPUT"){
+					//Check if the input is not empty
+					if($(children[0]).val() != ""){
+						//If the id is a merit then put the end result in the meritOutput instead of specialCaseOutput
+						if (currentCase.attr("id").includes("merit") ){
+							console.log("Merit is true")
+							key = $(children[0]).val()
+							isMerit = true
+						}
+						else{
+							key = $(children[0]).val()
 						}
 					}
 				}
 			}
+			else{
+				key = currentCase.text().slice(0,-1).toLowerCase()
+			}
+
 			if (key != ""){
 				// console.log(key)
 				value = 0
