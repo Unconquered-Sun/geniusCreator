@@ -58,6 +58,7 @@ class genius_char(models.Model):
 	inspiration = models.IntegerField()
 	obligation = models.IntegerField()
 	size = models.IntegerField()
+	armor = models.IntegerField()
 	specialties = JSONField()
 	merits = JSONField()
 
@@ -118,6 +119,7 @@ class genius_char(models.Model):
 			inspiration = attributes.get('inspiration'),
 			obligation = attributes.get('obligation'),
 			size = attributes.get('size'),
+			armor = attributes.get('armor'),
 			specialties = {},
 			merits = attributes.get("merit"))
 

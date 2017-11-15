@@ -129,7 +129,8 @@ $(document).ready(function(){
 		"willpower":{"operation":"add","values":[{"type":"dots","value":"resolve"},{"type":"dots","value":"composure"}]},
 		"speed":{"operation":"add","values":[{"type":"dots","value":"strength"},{"type":"dots","value":"dexterity"},{"type":"static","value":5}]},
 		"defense":{"operation":"lower","values":[{"type":"dots","value":"dexterity"},{"type":"dots","value":"wits"}]},
-		"initative":{"operation":"add","values":[{"type":"dots","value":"dexterity"},{"type":"dots","value":"composure"}]}
+		"initative":{"operation":"add","values":[{"type":"dots","value":"dexterity"},{"type":"dots","value":"composure"}]},
+		"mania":{"operation":"chart", "reference":"inspiration", "chart":{0:0, 1:10, 2:12, 3:16, 4:20, 5:25, 6:30, 7:40, 8:60, 9:80, 10:100}},
 	}
 	derivedValuesHelper();
 
@@ -211,8 +212,23 @@ $(document).ready(function(){
 			}
 			$("."+target).filter("input").val(lowest).prop('disabled', true);
 		}
-		else if(values["operation"]=="dict"){
-			
+		else if(values["operation"]=="chart"){
+			// console.log("CHART")
+			chart_val = $("."+values["reference"]).filter("input").val()
+			// console.log(chart_val)
+			if (chart_val == ""){
+				$("."+target).filter("input").val(0).prop('disabled', true);
+			}
+			else{
+				if(chart_val in values["chart"]){
+					// console.log("EXISTS")
+					$("."+target).filter("input").val( values["chart"][chart_val] ).prop('disabled', true);
+				}
+				else{
+					// console.log("DOESNT EXIST")
+					$("."+target).filter("input").val(0).prop('disabled', true);
+				}
+			}
 		}
 	}
 
@@ -424,12 +440,20 @@ $(document).ready(function(){
 						temp_checkbox.prop("checked", true)
 					}
 				}
+				else{
+					// console.log(target)
+					// console.log(key)
+					// console.log( $("."+target+"_value") )
+					$(".textbox").filter("."+target+"_value").val(genius_data[key])
+					$(".textbox").filter(".specialcase_value").filter("."+target).val(genius_data[key])
+				}
 			}
 			else if(typeof genius_data[key] == "string"){
-				console.log(target)
-				console.log(key)
-				console.log( $("."+target+"_value") )
+				// console.log(target)
+				// console.log(key)
+				// console.log( $("."+target+"_value") )
 				$(".textbox").filter("."+target+"_value").val(genius_data[key])
+				$(".textbox").filter(".specialcase_value").filter("."+target).val(genius_data[key])
 			}
 		}
 		console.log(genius_data)

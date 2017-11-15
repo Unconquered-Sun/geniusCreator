@@ -65,6 +65,7 @@ def update_genius(self, player_info, attributes, userID):
 		self.inspiration = attributes.get('inspiration')
 		self.obligation = attributes.get('obligation')
 		self.size = attributes.get('size')
+		self.armor = attributes.get('armor')
 		self.specialties = {}
 		self.merits = attributes.get("merit")
 
