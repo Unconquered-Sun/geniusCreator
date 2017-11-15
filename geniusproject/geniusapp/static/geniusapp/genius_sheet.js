@@ -384,7 +384,7 @@ $(document).ready(function(){
 			},
 			error: function(request, textStatus, errorThrown){
 				console.log('textStatus ' + textStatus);
-        		console.log('errorThrown ' + errorThrown);
+				console.log('errorThrown ' + errorThrown);
 			}
 		})
 		// $.post("/genius/",{"genius":output, "csrfmiddlewaretoken":getCookie("csrftoken")},function(data){
@@ -395,18 +395,45 @@ $(document).ready(function(){
 
 
 	function getCookie(name) {
-    var cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-        var cookies = document.cookie.split(';');
-        for (var i = 0; i < cookies.length; i++) {
-            var cookie = jQuery.trim(cookies[i]);
-            // Does this cookie string begin with the name we want?
-            if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
-            }
-        }
-    }
-    return cookieValue;
-}
+		var cookieValue = null;
+		if (document.cookie && document.cookie !== '') {
+			var cookies = document.cookie.split(';');
+			for (var i = 0; i < cookies.length; i++) {
+				var cookie = jQuery.trim(cookies[i]);
+				// Does this cookie string begin with the name we want?
+				if (cookie.substring(0, name.length + 1) === (name + '=')) {
+					cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+					break;
+				}
+			}
+		}
+		return cookieValue;
+	}
+
+	function loadGenius(){
+		genius_data = $.parseJSON( $("#geniusJSON").text() )[0]["fields"]
+		for (key in genius_data){
+			// console.log(key.replace("_axiom","").replace("_skill",""))
+			target = key.replace("_axiom","").replace("_skill","").replace("_attr","")
+			//Load everthing with a numeric value
+			if (Number.isInteger(genius_data[key]) ){
+				// load skills, axioms, and attributes
+				if (key.slice(-5) == "axiom" || key.slice(-5) == "skill" || key.slice(-4) == "attr" ){
+					for (x=genius_data[key]; x>0; x--){
+						temp_checkbox = $('.'+target).filter(".checkbox").filter("."+String( x ) )
+						temp_checkbox.prop("checked", true)
+					}
+				}
+			}
+			else if(typeof genius_data[key] == "string"){
+				console.log(target)
+				console.log(key)
+				console.log( $("."+target+"_value") )
+				$(".textbox").filter("."+target+"_value").val(genius_data[key])
+			}
+		}
+		console.log(genius_data)
+		derivedValuesHelper()
+	}
+	loadGenius()
 });

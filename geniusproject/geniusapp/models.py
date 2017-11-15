@@ -6,11 +6,14 @@ from django.contrib.postgres.fields import JSONField
 class genius_char(models.Model):
 	owner = models.ForeignKey(User, on_delete=models.CASCADE)
 	name = models.CharField(max_length=256)
+	player = models.CharField(max_length=256)
+	chronicle = models.CharField(max_length=256)
+	concept = models.CharField(max_length=256)
 	catalyst = models.CharField(max_length=256)
 	foundation = models.CharField(max_length=256)
 	virtue = models.CharField(max_length=256)
 	vice = models.CharField(max_length=256)
-	aesthetics = models.TextField()
+	aesthetic = models.TextField()
 	strength_attr = models.IntegerField()
 	dexterity_attr = models.IntegerField()
 	stamina_attr = models.IntegerField()
@@ -63,11 +66,14 @@ class genius_char(models.Model):
 		genius_instance = self(
 			owner = userID,
 			name = player_info.get('name'),
+			player = player_info.get('player'),
+			chronicle = player_info.get('chronicle'),
+			concept = player_info.get('concept'),
 			catalyst = player_info.get('catalyst'),
 			foundation = player_info.get('foundation'),
 			virtue = player_info.get('virtue'),
 			vice = player_info.get('vice'),
-			aesthetics = player_info.get('aesthetic'),
+			aesthetic = player_info.get('aesthetic'),
 			strength_attr = attributes.get('strength'),
 			dexterity_attr = attributes.get('dexterity'),
 			stamina_attr = attributes.get('stamina'),

@@ -12,7 +12,6 @@
 	padding-bottom: 2px;
 }
 
-
 .left_div{
 	display: inline-block;
 	text-align: left;
@@ -30,7 +29,7 @@
 
 }
 #outer_char_sheet{
-	width:50%;
+	width:70%;
 }
 /*.specialcase_key{
 	width:50%;

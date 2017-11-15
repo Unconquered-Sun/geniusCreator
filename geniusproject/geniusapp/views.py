@@ -3,19 +3,24 @@ from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
+from django.core import serializers
 from django.views.generic import View
 from .models import genius_char, wonder_info
 import json
+
 
 #Update an existing genius object
 def update_genius(self, player_info, attributes, userID):
 		self.owner = userID;
 		self.name = player_info.get('name');
+		self.player = player_info.get('player')
+		self.chronicle = player_info.get('chronicle')
+		self.concept = player_info.get('concept')
 		self.catalyst = player_info.get('catalyst')
 		self.foundation = player_info.get('foundation')
 		self.virtue = player_info.get('virtue')
 		self.vice = player_info.get('vice')
-		self.aesthetics = player_info.get('aesthetic')
+		self.aesthetic = player_info.get('aesthetic')
 		self.strength_attr = attributes.get('strength')
 		self.dexterity_attr = attributes.get('dexterity')
 		self.stamina_attr = attributes.get('stamina')
@@ -128,7 +133,8 @@ class ShowGenius(View):
 					return render(request, "geniusapp/genius.html",{"genius":genius_info})
 				else:
 					print("Existing Genius")
-					genius_info = {"genius":result}
+					genius_info = serializers.serialize('json', [result,])
+					print(genius_info)
 					return render(request, "geniusapp/genius.html",{"genius":genius_info})
 
 				
