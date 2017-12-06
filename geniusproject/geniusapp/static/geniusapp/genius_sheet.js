@@ -6,48 +6,86 @@ Array.prototype.find = function(regex) {
 
 
 $(document).ready(function(){
-	var range=[1,2,3,4,5]
-	checkboxPattern ={"mental_attr":["intelligence","wits","resolve"],
-			"social_attr":["presence","manipulation","composure"],
-			"physical_attr":["strength","dexterity","stamina"], 
-			"mental_skills":["academics","computer","crafts","investigation","medicine","occult","politics","science"],
-			"physical_skills":["athletics","brawl","drive","firearms","larceny","stealth","survival","weaponry"],
-			"social_skills":["animalken","empathy","expression","intimidation","persuasion","socialize","streetwise","subterfuge"],
-			"axioms":["apokalypsi","automata","epikrato","exelixi","katastrofi","metaptropi","prostasia","skafoi"]}
-	
-	textboxPattern={"name_player_game":["name","player","chronicle"],
-					"virtue_vice_concept":["virtue","vice","concept"],
-					"catalyst_foundation_aesthetic":["catalyst","foundation","aesthetic"]}
-	specialCases={
-		"merits":{"keys":['<input type="text" class="specialcase">','<input type="text" class="specialcase">','<input type="text" class="specialcase">','<input type="text" class="specialcase">','<input type="text" class="specialcase">','<input type="text" class="specialcase">','<input type="text" class="specialcase">','<input type="text" class="specialcase">','<input type="text" class="specialcase">'], "value_type":"dots", "key_type":"html"},
-		"misc":{"keys":['health','willpower','inspiration','mania','obligation','size','speed','defense','armor','initative'],"value_type":"text","key_type":"standard"} }
-	
+	//Old checkbox pattern
+	// checkboxPattern ={"mental_attr":["intelligence","wits","resolve"],
+	// 		"social_attr":["presence","manipulation","composure"],
+	// 		"physical_attr":["strength","dexterity","stamina"], 
+	// 		"mental_skills":["academics","computer","crafts","investigation","medicine","occult","politics","science"],
+	// 		"physical_skills":["athletics","brawl","drive","firearms","larceny","stealth","survival","weaponry"],
+	// 		"social_skills":["animalken","empathy","expression","intimidation","persuasion","socialize","streetwise","subterfuge"],
+	// 		"axioms":["apokalypsi","automata","epikrato","exelixi","katastrofi","metaptropi","prostasia","skafoi"]}
 	
 
-	for (key in checkboxPattern){
-		load_skills(key, checkboxPattern[key])
+	// textboxPattern={"name_player_game":["name","player","chronicle"],
+	// 				"virtue_vice_concept":["virtue","vice","concept"],
+	// 				"catalyst_foundation_aesthetic":["catalyst","foundation","aesthetic"]}
+	// for (key in textboxPattern){
+	// 	load_text_box(key, textboxPattern[key])
+	// }
+	// function load_text_box(target, keys){
+	// 	var text_output = "";
+	// 	text_output = '<table id="'+target+'_table">'
+	// 	for( key in keys){
+	// 		text_output += '<tr>'
+	// 		text_output+='<td id="'+keys[key]+'_key">'+toUpperCase(keys[key])+':</td>';
+	// 		text_output += '<td><input type="text" id="'+keys[key]+'_value" class="'+keys[key]+'_value textbox '+target+'"></td>';
+	// 		text_output += '</tr>'
+	// 	}
+	// 	text_output += '</table>';
+	// 	$("#"+target).html(text_output);
+	// }
+	
+	var range=[1,2,3,4,5]
+	skillsPattern ={"mental_skills":["academics","computer","crafts","investigation","medicine","occult","politics","science"],
+			"physical_skills":["athletics","brawl","drive","firearms","larceny","stealth","survival","weaponry"],
+			"social_skills":["animalken","empathy","expression","intimidation","persuasion","socialize","streetwise","subterfuge"]}
+	
+	specialCases={
+		"mental_attr":{"keys":["intelligence","wits","resolve"] ,"value_type":"dots", "key_type":"standard"},
+		"social_attr":{"keys":["presence","manipulation","composure"] ,"value_type":"dots", "key_type":"standard"},
+		"physical_attr":{"keys":["strength","dexterity","stamina"] ,"value_type":"dots", "key_type":"standard"},
+		"axioms":{"keys":["apokalypsi","automata","epikrato","exelixi","katastrofi","metaptropi","prostasia","skafoi"] ,"value_type":"dots", "key_type":"standard"},
+		
+		"char_info_1":{"keys":["name","player","chronicle"],"value_type":"text","key_type":"standard"},
+		"char_info_2":{"keys":["virtue","vice","concept"],"value_type":"text","key_type":"standard"},
+		"char_info_3":{"keys":["catalyst","foundation","aesthetic"],"value_type":"text","key_type":"standard"},
+		"merits":{"keys":['<input type="text" class="specialcase">','<input type="text" class="specialcase">','<input type="text" class="specialcase">','<input type="text" class="specialcase">','<input type="text" class="specialcase">','<input type="text" class="specialcase">','<input type="text" class="specialcase">','<input type="text" class="specialcase">','<input type="text" class="specialcase">'], "value_type":"dots", "key_type":"html"},
+		"misc":{"keys":['health','willpower','inspiration','mania','jabir','obligation','socialPenalty','size','speed','defense','armor','initative'],"value_type":"text","key_type":"standard"} }
+	
+	// Load skills
+	for (key in skillsPattern){
+		load_skills(key, skillsPattern[key])
 	}
-	for (key in textboxPattern){
-		load_text_box(key, textboxPattern[key])
-	}
+	
 	var case_id = 1
 	for(specialCase in specialCases){
 		new_case_id = load_special_cases(specialCase, specialCases[specialCase]["keys"], specialCases[specialCase]["value_type"], specialCases[specialCase]["key_type"], case_id)
 		case_id+= new_case_id
 	}
-	function load_text_box(target, keys){
-		var text_output = "";
-		text_output = '<table id="'+target+'_table">'
+
+	function load_skills(target, keys){
+		var skill_output = "";
+		skill_output = '<table id="'+target+'_table">'
 		for( key in keys){
-			text_output += '<tr>'
-			text_output+='<td id="'+keys[key]+'_key">'+toUpperCase(keys[key])+':</td>';
-			text_output += '<td><input type="text" id="'+keys[key]+'_value" class="'+keys[key]+'_value textbox '+target+'"></td>';
-			text_output += '</tr>'
+			skill_output += '<tr>'
+			skill_output+='<td id="'+keys[key]+'_key">'+toUpperCase(keys[key])+':</td>';
+			skill_output += '<td class="value"><div>';
+			for(x in range){
+				skill_output+='<input type="checkbox" class="'+range[x]+' checkbox '+keys[key]+' '+target+'">'
+			}
+			skill_output += '</td>';
+			skill_output += '</tr>'
+
+			//Add specialty textbox under the skill
+			skill_output += '<tr>'
+			skill_output += '<td>Specialties:</td>'
+			skill_output += '<td><input type="textbox" class="specialties '+keys[key]+'"></td>'
+			skill_output += '</tr>'
 		}
-		text_output += '</table>';
-		$("#"+target).html(text_output);
-		// console.log(text_output);
-	}
+		skill_output += '</table>';
+		$("#"+target).html(skill_output);
+	};
+
 
 	function load_special_cases(target, keys, value_type, key_type, special_case_id){
 		var special_output = "";
@@ -67,7 +105,7 @@ $(document).ready(function(){
 			else if (key_type == "html"){
 				key_name = "target"
 				special_output+='<td id="'+target+"_"+x+'_key" class="specialcase_key specialcase specialcase_id_'+starting_id+'">'+keys[key]+':</td>';
-				x+=1
+				
 			}
 
 			new_key = ""
@@ -77,6 +115,7 @@ $(document).ready(function(){
 			else if (key_name == "key"){
 				new_key=keys[key]
 			}
+			x+=1
 
 			//create value td
 			if(value_type == "dots"){
@@ -103,22 +142,6 @@ $(document).ready(function(){
 		
 	}
 
-	function load_skills(target, keys){
-		var skill_output = "";
-		skill_output = '<table id="'+target+'_table">'
-		for( key in keys){
-			skill_output += '<tr>'
-			skill_output+='<td id="'+keys[key]+'_key">'+toUpperCase(keys[key])+':</td>';
-			skill_output += '<td class="value"><div>';
-			for(x in range){
-				skill_output+='<input type="checkbox" class="'+range[x]+' checkbox '+keys[key]+' '+target+'">'
-			}
-			skill_output += '</td>';
-			skill_output += '</tr>'
-		}
-		skill_output += '</table>';
-		$("#"+target).html(skill_output);
-	};
 
 	function toUpperCase(word){
 		return word.charAt(0).toUpperCase() + word.slice(1);
@@ -131,6 +154,8 @@ $(document).ready(function(){
 		"defense":{"operation":"lower","values":[{"type":"dots","value":"dexterity"},{"type":"dots","value":"wits"}]},
 		"initative":{"operation":"add","values":[{"type":"dots","value":"dexterity"},{"type":"dots","value":"composure"}]},
 		"mania":{"operation":"chart", "reference":"inspiration", "chart":{0:0, 1:10, 2:12, 3:16, 4:20, 5:25, 6:30, 7:40, 8:60, 9:80, 10:100}},
+		"jabir":{"operation":"chart", "reference":"inspiration", "chart":{0:0, 1:-1, 2:-1, 3:-1, 4:-1, 5:-2, 6:-2, 7:-2, 8:-3, 9:-3, 10:-3}},
+		"socialPenalty":{"operation":"chart", "reference":"obligation", "chart":{1:-2, 2:-2, 3:-1, 4:-1, 5:0, 6:0, 7:0, 8:0, 9:0, 10:0}},
 	}
 	derivedValuesHelper();
 
@@ -305,8 +330,8 @@ $(document).ready(function(){
 		var checkBoxes = $(":checkbox").not(".specialcase").toArray();
 		var skillList = {}
 		classList = [];
-		for (x in checkboxPattern){
-			classList = classList.concat(checkboxPattern[x])
+		for (x in skillsPattern){
+			classList = classList.concat(skillsPattern[x])
 		}
 		for(x in classList){
 			skillList[classList[x]]=getDots(classList[x])
@@ -441,19 +466,33 @@ $(document).ready(function(){
 					}
 				}
 				else{
-					// console.log(target)
-					// console.log(key)
-					// console.log( $("."+target+"_value") )
 					$(".textbox").filter("."+target+"_value").val(genius_data[key])
 					$(".textbox").filter(".specialcase_value").filter("."+target).val(genius_data[key])
 				}
 			}
 			else if(typeof genius_data[key] == "string"){
-				// console.log(target)
-				// console.log(key)
-				// console.log( $("."+target+"_value") )
 				$(".textbox").filter("."+target+"_value").val(genius_data[key])
 				$(".textbox").filter(".specialcase_value").filter("."+target).val(genius_data[key])
+			}
+			else if (typeof genius_data[key] == "object"){
+				if (key == "merits"){
+					merit_list = genius_data[key]
+					merit_keys = Object.keys( merit_list )
+
+					for(merit in merit_keys ){
+
+						// console.log( $("#"+key+"_"+(parseInt(merit)+1)+"_key" ) )
+						$("#"+key+"_"+(parseInt(merit)+1)+"_key" ).children("input").val(merit_keys[merit])
+						
+						for (x=merit_list[ merit_keys[merit] ]; x>0; x--){
+							temp_checkbox = $("#"+key+"_"+(parseInt(merit)+1)+"_dots").children("div").children("."+String( x ) )
+							temp_checkbox.prop("checked", true)
+						}
+					}
+				}
+				else if (key == "specialties"){
+
+				}
 			}
 		}
 		console.log(genius_data)

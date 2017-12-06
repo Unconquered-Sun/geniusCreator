@@ -63,18 +63,18 @@ class genius_char(models.Model):
 	merits = JSONField()
 
 	@classmethod
-	def create_genius(self, player_info, attributes, userID):
+	def create_genius(self, attributes, userID):
 		genius_instance = self(
 			owner = userID,
-			name = player_info.get('name'),
-			player = player_info.get('player'),
-			chronicle = player_info.get('chronicle'),
-			concept = player_info.get('concept'),
-			catalyst = player_info.get('catalyst'),
-			foundation = player_info.get('foundation'),
-			virtue = player_info.get('virtue'),
-			vice = player_info.get('vice'),
-			aesthetic = player_info.get('aesthetic'),
+			name = attributes.get('name'),
+			player = attributes.get('player'),
+			chronicle = attributes.get('chronicle'),
+			concept = attributes.get('concept'),
+			catalyst = attributes.get('catalyst'),
+			foundation = attributes.get('foundation'),
+			virtue = attributes.get('virtue'),
+			vice = attributes.get('vice'),
+			aesthetic = attributes.get('aesthetic'),
 			strength_attr = attributes.get('strength'),
 			dexterity_attr = attributes.get('dexterity'),
 			stamina_attr = attributes.get('stamina'),

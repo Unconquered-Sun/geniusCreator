@@ -10,17 +10,17 @@ import json
 
 
 #Update an existing genius object
-def update_genius(self, player_info, attributes, userID):
+def update_genius(self, attributes, userID):
 		self.owner = userID;
-		self.name = player_info.get('name');
-		self.player = player_info.get('player')
-		self.chronicle = player_info.get('chronicle')
-		self.concept = player_info.get('concept')
-		self.catalyst = player_info.get('catalyst')
-		self.foundation = player_info.get('foundation')
-		self.virtue = player_info.get('virtue')
-		self.vice = player_info.get('vice')
-		self.aesthetic = player_info.get('aesthetic')
+		self.name = attributes.get('name');
+		self.player = attributes.get('player')
+		self.chronicle = attributes.get('chronicle')
+		self.concept = attributes.get('concept')
+		self.catalyst = attributes.get('catalyst')
+		self.foundation = attributes.get('foundation')
+		self.virtue = attributes.get('virtue')
+		self.vice = attributes.get('vice')
+		self.aesthetic = attributes.get('aesthetic')
 		self.strength_attr = attributes.get('strength')
 		self.dexterity_attr = attributes.get('dexterity')
 		self.stamina_attr = attributes.get('stamina')
@@ -155,7 +155,7 @@ class ShowGenius(View):
 		new_genius = {}
 		player_attr = {}
 		for sub_list in temp_genius.keys():
-			if sub_list != "merit" and sub_list != "playerInfo":
+			if sub_list != "merit" and sub_list != "specialties":
 				for item in temp_genius[sub_list].keys():
 					if item != "":
 						new_genius[item] = temp_genius[sub_list][item]
@@ -163,27 +163,32 @@ class ShowGenius(View):
 				#Two objects should not be dirrectly added to the new genius: merits and playerInfo
 				if sub_list == "merit":
 					new_genius[sub_list] = temp_genius[sub_list]
-				elif sub_list == "playerInfo":
+				elif sub_list == "specialties":
 					player_attr = temp_genius[sub_list]
 
+		#If the test_genius is not in the request.POST do nothing
 		if temp_genius == False:
 			return HttpResponse(str("TEST"))
+		#If the test_genius does contain information then 
 		else:
+			#Attempt to load the genius by the user id
 			try:
-				result =genius_char.objects.get(owner_id=request.session["id"])
+				result = genius_char.objects.get(owner_id=request.session["id"])
 			except genius_char.DoesNotExist:
 				result = None
+			#If the genius is not found then we will create the genius
 			if result == None:
-				temp_genius_object = genius_char.create_genius(player_attr, new_genius, User.objects.get(id=request.session["id"]))
-				print("test1")
+				temp_genius_object = genius_char.create_genius( new_genius, User.objects.get(id=request.session["id"]))
+				#And save the genius
 				temp_genius_object.save()
+				#Before returning created
 				return JsonResponse({"result":"created"})
-				
+			#If the genius is found in the datbase then we will update the genius
 			else:
-				print("test2 ver 11")
-				
-				update_genius(result, player_attr, new_genius, User.objects.get(id=request.session["id"]) )
+				update_genius(result, new_genius, User.objects.get(id=request.session["id"]) )
+				#And save the result
 				result.save()
+				
 				return JsonResponse({"result":"updated"})
 
 class ShowWonders(View):
